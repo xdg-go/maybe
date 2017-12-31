@@ -6,14 +6,28 @@ type S struct {
 	err  error
 }
 
-// NewS constructs a "Just" S from a given string.
-func NewS(s string) S {
+// NewS constructs an S from a given slice of strings or error. If e is
+// not nil, returns ErrS(e), otherwise returns JustS(s)
+func NewS(s string, e error) S {
+	if e != nil {
+		return ErrS(e)
+	}
+	return JustS(s)
+}
+
+// JustS constructs a "Just" S from a given slice of strings.
+func JustS(s string) S {
 	return S{just: s}
 }
 
 // ErrS constructs a "Nothing" S from a given error.
 func ErrS(e error) S {
 	return S{err: e}
+}
+
+// IsErr returns true for a "Nothing" S with an error
+func (m S) IsErr() bool {
+	return m.err != nil
 }
 
 // Bind applies a function that takes a string and returns an S.

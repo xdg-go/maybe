@@ -6,14 +6,28 @@ type AoS struct {
 	err  error
 }
 
-// NewAoS constructs a "Just" AoS from a given slice of strings.
-func NewAoS(s []string) AoS {
+// NewAoS constructs an AoS from a given slice of strings or error. If e is
+// not nil, returns ErrAOS(e), otherwise returns JustAOS(s)
+func NewAoS(s []string, e error) AoS {
+	if e != nil {
+		return ErrAoS(e)
+	}
+	return JustAoS(s)
+}
+
+// JustAoS constructs a "Just" AoS from a given slice of strings.
+func JustAoS(s []string) AoS {
 	return AoS{just: s}
 }
 
 // ErrAoS constructs a "Nothing" AoS from a given error.
 func ErrAoS(e error) AoS {
 	return AoS{err: e}
+}
+
+// IsErr returns true for a "Nothing" AoS with an error
+func (m AoS) IsErr() bool {
+	return m.err != nil
 }
 
 // Bind applies a function that takes a slice of strings and returns an AoS.

@@ -16,25 +16,27 @@ func TestMaybeString(t *testing.T) {
 	var just string
 	var err error
 
-	good = maybe.NewS("Hello")
+	good = maybe.JustS("Hello")
 	just, err = good.Unbox()
 	is.Equal(just, "Hello")
 	is.Nil(err)
+	is.False(good.IsErr())
 
 	bad = maybe.ErrS(errors.New("bad string"))
 	just, err = bad.Unbox()
 	is.Equal(just, "")
 	is.NotNil(err)
 	is.Equal(err.Error(), "bad string")
+	is.True(bad.IsErr())
 
 	// Map S to S
-	got = good.Bind(func(s string) maybe.S { return maybe.NewS(s + " World") })
+	got = good.Bind(func(s string) maybe.S { return maybe.JustS(s + " World") })
 	just, err = got.Unbox()
 	is.Equal(just, "Hello World")
 	is.Nil(err)
 
 	// Map S to AoS
-	maos := good.BindAoS(func(s string) maybe.AoS { return maybe.NewAoS([]string{s}) })
+	maos := good.BindAoS(func(s string) maybe.AoS { return maybe.JustAoS([]string{s}) })
 	aos, err := maos.Unbox()
 	is.Equal(aos, []string{"Hello"})
 	is.Nil(err)
