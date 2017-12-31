@@ -39,8 +39,8 @@ func (m AoS) Bind(f func(s []string) AoS) AoS {
 	return f(m.just)
 }
 
-// BindS applies a function that takes a slice of strings and returns an S.
-func (m AoS) BindS(f func(s []string) S) S {
+// Join applies a function that takes a slice of strings and returns an S.
+func (m AoS) Join(f func(s []string) S) S {
 	if m.err != nil {
 		return ErrS(m.err)
 	}

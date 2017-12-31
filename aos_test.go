@@ -31,14 +31,14 @@ func TestMaybeArrayOfString(t *testing.T) {
 	is.Equal(err.Error(), "bad string")
 	is.True(bad.IsErr())
 
-	// Map AoS to AoS
+	// Bind AoS to AoS
 	got = good.Bind(func(s []string) maybe.AoS { return maybe.JustAoS(s[1:]) })
 	just, err = got.Unbox()
 	is.Equal(just, []string{"World"})
 	is.Nil(err)
 
-	// Map AoS to S
-	ms := good.BindS(func(s []string) maybe.S { return maybe.JustS(strings.Join(s, " ")) })
+	// Join AoS to S
+	ms := good.Join(func(s []string) maybe.S { return maybe.JustS(strings.Join(s, " ")) })
 	s, err := ms.Unbox()
 	is.Equal(s, "Hello World")
 	is.Nil(err)

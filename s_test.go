@@ -29,14 +29,14 @@ func TestMaybeString(t *testing.T) {
 	is.Equal(err.Error(), "bad string")
 	is.True(bad.IsErr())
 
-	// Map S to S
+	// Bind S to S
 	got = good.Bind(func(s string) maybe.S { return maybe.JustS(s + " World") })
 	just, err = got.Unbox()
 	is.Equal(just, "Hello World")
 	is.Nil(err)
 
-	// Map S to AoS
-	maos := good.BindAoS(func(s string) maybe.AoS { return maybe.JustAoS([]string{s}) })
+	// Split S to AoS
+	maos := good.Split(func(s string) maybe.AoS { return maybe.JustAoS([]string{s}) })
 	aos, err := maos.Unbox()
 	is.Equal(aos, []string{"Hello"})
 	is.Nil(err)

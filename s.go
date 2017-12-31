@@ -39,8 +39,8 @@ func (m S) Bind(f func(s string) S) S {
 	return f(m.just)
 }
 
-// BindAoS applies a function that takes a string and returns an AoS.
-func (m S) BindAoS(f func(s string) AoS) AoS {
+// Split applies a function that takes a string and returns an AoS.
+func (m S) Split(f func(s string) AoS) AoS {
 	if m.err != nil {
 		return ErrAoS(m.err)
 	}
