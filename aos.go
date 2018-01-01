@@ -70,6 +70,26 @@ func (m AoS) Map(f func(s string) S) AoS {
 	return JustAoS(new)
 }
 
+// ToInt applies a function that takes a string and returns an I.If the AoS is
+// invalid or if any function returns an invalid I, Map returns an invalid
+// AoI.
+func (m AoS) ToInt(f func(s string) I) AoI {
+	if m.err != nil {
+		return ErrAoI(m.err)
+	}
+
+	new := make([]int, len(m.just))
+	for i, v := range m.just {
+		num, err := f(v).Unbox()
+		if err != nil {
+			return ErrAoI(err)
+		}
+		new[i] = num
+	}
+
+	return JustAoI(new)
+}
+
 // Unbox returns the underlying slice of strings value or error.
 func (m AoS) Unbox() ([]string, error) {
 	return m.just, m.err

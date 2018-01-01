@@ -2,6 +2,7 @@ package maybe_test
 
 import (
 	"errors"
+	"strconv"
 	"testing"
 
 	"github.com/xdg/maybe"
@@ -81,5 +82,34 @@ func TestStringJoin(t *testing.T) {
 
 	// Split S to AoS
 	got = bad.Split(f)
+	is.True(got.IsErr())
+}
+
+func TestStringToInt(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	var good, bad, notNum maybe.S
+	var got maybe.I
+	var err error
+
+	good = maybe.JustS("42")
+	notNum = maybe.JustS("forty-two")
+	bad = maybe.ErrS(errors.New("bad string"))
+
+	f := func(s string) maybe.I { return maybe.NewI(strconv.Atoi(s)) }
+
+	// Convert S to I; good path
+	got = good.ToInt(f)
+	x, err := got.Unbox()
+	is.Equal(x, 42)
+	is.Nil(err)
+
+	// Convert S to I; bad path
+	got = notNum.ToInt(f)
+	is.True(got.IsErr())
+
+	// Convert invalid S to I
+	got = bad.ToInt(f)
 	is.True(got.IsErr())
 }

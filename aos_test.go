@@ -2,6 +2,7 @@ package maybe_test
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -110,4 +111,31 @@ func TestArrayOfStringMap(t *testing.T) {
 	// Map where function returns invalid
 	lcBadMap := good.Map(func(s string) maybe.S { return maybe.ErrS(errors.New("bad string")) })
 	is.True(lcBadMap.IsErr())
+}
+
+func TestArrayOfStringToInt(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	input := []string{"42", "23"}
+	good, bad := getStrFixtures(input)
+	notNum := maybe.JustAoS([]string{"23", "forty-two"})
+	var got maybe.AoI
+	var err error
+
+	f := func(s string) maybe.I { return maybe.NewI(strconv.Atoi(s)) }
+
+	// Convert S to I; good path
+	got = good.ToInt(f)
+	x, err := got.Unbox()
+	is.Equal(x, []int{42, 23})
+	is.Nil(err)
+
+	// Convert S to I; bad path
+	got = notNum.ToInt(f)
+	is.True(got.IsErr())
+
+	// Convert invalid S to I
+	got = bad.ToInt(f)
+	is.True(got.IsErr())
 }

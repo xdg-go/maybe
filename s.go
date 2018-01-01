@@ -49,6 +49,15 @@ func (m S) Split(f func(s string) AoS) AoS {
 	return f(m.just)
 }
 
+// ToInt applies a function that takes a string and returns an I.
+func (m S) ToInt(f func(s string) I) I {
+	if m.err != nil {
+		return ErrI(m.err)
+	}
+
+	return f(m.just)
+}
+
 // Unbox returns the underlying string value or error.
 func (m S) Unbox() (string, error) {
 	return m.just, m.err
