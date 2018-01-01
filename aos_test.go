@@ -15,7 +15,7 @@ func getStrFixtures(input []string) (good, bad maybe.AoS) {
 	return
 }
 
-func TestMaybeArrayOfString(t *testing.T) {
+func TestArrayOfString(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
 
@@ -36,20 +36,59 @@ func TestMaybeArrayOfString(t *testing.T) {
 	is.Equal(err.Error(), "bad string")
 	is.True(bad.IsErr())
 
-	// Bind AoS to AoS
-	got = good.Bind(func(s []string) maybe.AoS { return maybe.JustAoS(s[1:]) })
+	got = maybe.NewAoS(input, nil)
+	is.Equal(got, good)
+
+	got = maybe.NewAoS(nil, err)
+	is.True(got.IsErr())
+}
+
+func TestArrayOfStringBind(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	input := []string{"Hello", "World"}
+	good, bad := getStrFixtures(input)
+	var got maybe.AoS
+	var just []string
+	var err error
+
+	f := func(s []string) maybe.AoS { return maybe.JustAoS(s[1:]) }
+
+	// Bind AoS to AoS; good path
+	got = good.Bind(f)
 	just, err = got.Unbox()
 	is.Equal(just, []string{"World"})
 	is.Nil(err)
 
-	// Join AoS to S
-	ms := good.Join(func(s []string) maybe.S { return maybe.JustS(strings.Join(s, " ")) })
-	s, err := ms.Unbox()
-	is.Equal(s, "Hello World")
-	is.Nil(err)
+	// Bind AoS to AoS; bad path
+	got = bad.Bind(f)
+	is.True(got.IsErr())
 }
 
-func TestMaybeArrayOfStringMap(t *testing.T) {
+func TestArrayOfStringJoin(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	input := []string{"Hello", "World"}
+	good, bad := getStrFixtures(input)
+	var got maybe.S
+	var err error
+
+	f := func(s []string) maybe.S { return maybe.JustS(strings.Join(s, " ")) }
+
+	// Join AoS to S; good path
+	got = good.Join(f)
+	s, err := got.Unbox()
+	is.Equal(s, "Hello World")
+	is.Nil(err)
+
+	// Join AoS to S; bad path
+	got = bad.Join(f)
+	is.True(got.IsErr())
+}
+
+func TestArrayOfStringMap(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
 

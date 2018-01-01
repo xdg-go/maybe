@@ -14,7 +14,7 @@ func getIntFixtures(input []int) (good, bad maybe.AoI) {
 	return
 }
 
-func TestMaybeArrayOfInt(t *testing.T) {
+func TestArrayOfInt(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
 
@@ -35,26 +35,65 @@ func TestMaybeArrayOfInt(t *testing.T) {
 	is.Equal(err.Error(), "bad int")
 	is.True(bad.IsErr())
 
-	// Bind AoI to AoI
-	got = good.Bind(func(x []int) maybe.AoI { return maybe.JustAoI(x[1:]) })
+	got = maybe.NewAoI(input, nil)
+	is.Equal(got, good)
+
+	got = maybe.NewAoI(nil, err)
+	is.True(got.IsErr())
+}
+
+func TestArrayOfIntBind(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	input := []int{23, 42}
+	good, bad := getIntFixtures(input)
+	var got maybe.AoI
+	var just []int
+	var err error
+
+	f := func(x []int) maybe.AoI { return maybe.JustAoI(x[1:]) }
+
+	// Bind AoI to AoI; good path
+	got = good.Bind(f)
 	just, err = got.Unbox()
 	is.Equal(just, []int{42})
 	is.Nil(err)
 
-	// Join AoI to I
-	ms := good.Join(func(xs []int) maybe.I {
+	// Bind AoI to AoI; bad path
+	got = bad.Bind(f)
+	is.True(got.IsErr())
+}
+
+func TestArrayOfIntJoin(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	input := []int{23, 42}
+	good, bad := getIntFixtures(input)
+	var got maybe.I
+	var err error
+
+	f := func(xs []int) maybe.I {
 		var sum int
 		for _, v := range xs {
 			sum += v
 		}
 		return maybe.JustI(sum)
-	})
-	x, err := ms.Unbox()
+	}
+
+	// Join AoI to I; good path
+	got = good.Join(f)
+	x, err := got.Unbox()
 	is.Equal(x, 65)
 	is.Nil(err)
+
+	// Join AoI to I; bad path
+	got = bad.Join(f)
+	is.True(got.IsErr())
 }
 
-func TestMaybeArrayOfIntMap(t *testing.T) {
+func TestArrayOfIntMap(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
 
