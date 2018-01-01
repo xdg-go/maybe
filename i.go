@@ -1,13 +1,14 @@
 package maybe
 
-// I implements the Maybe monad for a int.
+// I implements the Maybe monad for a int.  An I is considered 'valid' or
+// 'invalid' depending on whether it contains a int or an error value.
 type I struct {
 	just int
 	err  error
 }
 
-// NewI constructs an I from a given slice of ints or error. If e is
-// not nil, returns ErrI(e), otherwise returns JustI(s)
+// NewI constructs an I from a given int or error. If e is not nil, returns
+// ErrI(e), otherwise returns JustI(s)
 func NewI(s int, e error) I {
 	if e != nil {
 		return ErrI(e)
@@ -15,17 +16,17 @@ func NewI(s int, e error) I {
 	return JustI(s)
 }
 
-// JustI constructs a "Just" I from a given slice of ints.
+// JustI constructs a valid I from a given int.
 func JustI(s int) I {
 	return I{just: s}
 }
 
-// ErrI constructs a "Nothing" I from a given error.
+// ErrI constructs an invalid I from a given error.
 func ErrI(e error) I {
 	return I{err: e}
 }
 
-// IsErr returns true for a "Nothing" I with an error
+// IsErr returns true for an invalid I.
 func (m I) IsErr() bool {
 	return m.err != nil
 }

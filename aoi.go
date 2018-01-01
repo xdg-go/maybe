@@ -1,13 +1,15 @@
 package maybe
 
-// AoI implements the Maybe monad for a slice of ints.
+// AoI implements the Maybe monad for a slice of ints.  An AoI is considered
+// 'valid' or 'invalid' depending on whether it contains a slice of ints or an
+// error value.
 type AoI struct {
 	just []int
 	err  error
 }
 
-// NewAoI constructs an AoI from a given slice of ints or error. If e is
-// not nil, returns ErrAOS(e), otherwise returns JustAOS(s)
+// NewAoI constructs an AoI from a given slice of ints or error. If e is not
+// nil, returns ErrAoI(e), otherwise returns JustAoI(s).
 func NewAoI(s []int, e error) AoI {
 	if e != nil {
 		return ErrAoI(e)
@@ -15,17 +17,17 @@ func NewAoI(s []int, e error) AoI {
 	return JustAoI(s)
 }
 
-// JustAoI constructs a "Just" AoI from a given slice of ints.
+// JustAoI constructs a valid AoI from a given slice of ints.
 func JustAoI(s []int) AoI {
 	return AoI{just: s}
 }
 
-// ErrAoI constructs a "Nothing" AoI from a given error.
+// ErrAoI constructs an invalid AoI from a given error.
 func ErrAoI(e error) AoI {
 	return AoI{err: e}
 }
 
-// IsErr returns true for a "Nothing" AoI with an error
+// IsErr returns true for an invalid AoI.
 func (m AoI) IsErr() bool {
 	return m.err != nil
 }
@@ -50,7 +52,7 @@ func (m AoI) Join(f func(s []int) I) I {
 
 // Map applies a function to each element of a valid AoI and returns a new
 // AoI.  If the AoI is invalid or if any function returns an invalid I, Map
-// returns a "Nothing" AoI.
+// returns an invalid AoI.
 func (m AoI) Map(f func(s int) I) AoI {
 	if m.err != nil {
 		return m
@@ -68,7 +70,7 @@ func (m AoI) Map(f func(s int) I) AoI {
 	return JustAoI(new)
 }
 
-// Unbox returns the underlying slice of ints value or error.
+// Unbox returns the underlying slice of ints or error.
 func (m AoI) Unbox() ([]int, error) {
 	return m.just, m.err
 }

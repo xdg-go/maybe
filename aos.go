@@ -1,13 +1,15 @@
 package maybe
 
-// AoS implements the Maybe monad for a slice of strings.
+// AoS implements the Maybe monad for a slice of strings.  An AoS is
+// considered 'valid' or 'invalid' depending on whether it contains a slice of
+// strings or an error value.
 type AoS struct {
 	just []string
 	err  error
 }
 
 // NewAoS constructs an AoS from a given slice of strings or error. If e is
-// not nil, returns ErrAOS(e), otherwise returns JustAOS(s)
+// not nil, returns ErrAoS(e), otherwise returns JustAoS(s)
 func NewAoS(s []string, e error) AoS {
 	if e != nil {
 		return ErrAoS(e)
@@ -15,17 +17,17 @@ func NewAoS(s []string, e error) AoS {
 	return JustAoS(s)
 }
 
-// JustAoS constructs a "Just" AoS from a given slice of strings.
+// JustAoS constructs a valid AoS from a given slice of strings.
 func JustAoS(s []string) AoS {
 	return AoS{just: s}
 }
 
-// ErrAoS constructs a "Nothing" AoS from a given error.
+// ErrAoS constructs an invalid AoS from a given error.
 func ErrAoS(e error) AoS {
 	return AoS{err: e}
 }
 
-// IsErr returns true for a "Nothing" AoS with an error
+// IsErr returns true for an invalid AoS.
 func (m AoS) IsErr() bool {
 	return m.err != nil
 }
@@ -50,7 +52,7 @@ func (m AoS) Join(f func(s []string) S) S {
 
 // Map applies a function to each element of a valid AoS and returns a new
 // AoS.  If the AoS is invalid or if any function returns an invalid S, Map
-// returns a "Nothing" AoS.
+// returns an invalid AoS.
 func (m AoS) Map(f func(s string) S) AoS {
 	if m.err != nil {
 		return m

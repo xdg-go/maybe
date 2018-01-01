@@ -1,13 +1,14 @@
 package maybe
 
-// S implements the Maybe monad for a string.
+// S implements the Maybe monad for a string.  An S is considered 'valid' or
+// 'invalid' depending on whether it contains a string or an error value.
 type S struct {
 	just string
 	err  error
 }
 
-// NewS constructs an S from a given slice of strings or error. If e is
-// not nil, returns ErrS(e), otherwise returns JustS(s)
+// NewS constructs an S from a given string or error. If e is not nil, returns
+// ErrS(e), otherwise returns JustS(s)
 func NewS(s string, e error) S {
 	if e != nil {
 		return ErrS(e)
@@ -15,17 +16,17 @@ func NewS(s string, e error) S {
 	return JustS(s)
 }
 
-// JustS constructs a "Just" S from a given slice of strings.
+// JustS constructs a valid S from a given string.
 func JustS(s string) S {
 	return S{just: s}
 }
 
-// ErrS constructs a "Nothing" S from a given error.
+// ErrS constructs an invalid S from a given error.
 func ErrS(e error) S {
 	return S{err: e}
 }
 
-// IsErr returns true for a "Nothing" S with an error
+// IsErr returns true for an invalid S.
 func (m S) IsErr() bool {
 	return m.err != nil
 }
