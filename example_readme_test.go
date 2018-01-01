@@ -1,5 +1,7 @@
 package maybe_test
 
+// +build go1.8
+
 import (
 	"fmt"
 	"strconv"
