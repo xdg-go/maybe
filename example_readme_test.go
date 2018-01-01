@@ -1,24 +1,3 @@
-[![GoDoc](https://godoc.org/github.com/xdg/maybe?status.svg)](https://godoc.org/github.com/xdg/maybe)
-[![Build Status](https://travis-ci.org/xdg/maybe.svg?branch=master)](https://travis-ci.org/xdg/maybe)
-
-# maybe – A Maybe monad experiment for Go
-
-## Description
-
-This package implements the [Maybe
-monad](https://en.wikipedia.org/wiki/Monad_(functional_programming)#The_Maybe_monad)
-for a couple basic types and arrays of those types.  This allows "boxing" a
-value or error and chaining operations on the boxed type without constant
-error checking.  See ["Error Handling in Go: Rob Pike Reinvented
-Monads"](https://www.innoq.com/en/blog/golang-errors-monads/) for more on
-the concept.
-
-This is an experiment to simplify some libraries the author is writing.  It
-should not be considered stable for production use.
-
-## Example
-
-```go
 package maybe_test
 
 import (
@@ -71,12 +50,9 @@ func Example_StrsToInts() {
 			fmt.Printf("%s: %v converted to %v\n", c.label, strs, nums)
 		}
 	}
+
+	// Output:
+	// success: Just [23 42 0] converted to Just [23 42 0]
+	// bad atoi: Just [23 forty-two 0] failed to convert: Err strconv.Atoi: parsing "forty-two": invalid syntax
+	// negative: Just [23 -42 0] failed to convert: Err -42 is negative
 }
-```
-
-## Copyright and License
-
-Copyright 2017 by David A. Golden. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License"). You may
-obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
