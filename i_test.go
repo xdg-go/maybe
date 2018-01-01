@@ -2,6 +2,7 @@ package maybe_test
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/xdg/maybe"
@@ -85,4 +86,29 @@ func TestIntJoin(t *testing.T) {
 	// Split I to AoI
 	got = bad.Split(f)
 	is.True(got.IsErr())
+}
+
+func TestIntToString(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	var good, bad maybe.I
+	var got maybe.S
+	var err error
+
+	good = maybe.JustI(42)
+	bad = maybe.ErrI(errors.New("bad int"))
+
+	f := func(x int) maybe.S { return maybe.JustS(fmt.Sprintf("%d", x)) }
+
+	// Convert I to S; good path
+	got = good.ToStr(f)
+	s, err := got.Unbox()
+	is.Equal(s, "42")
+	is.Nil(err)
+
+	// Convert S to I; bad path
+	got = bad.ToStr(f)
+	is.True(got.IsErr())
+
 }

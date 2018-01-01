@@ -2,6 +2,7 @@ package maybe_test
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/xdg/maybe"
@@ -118,4 +119,27 @@ func TestArrayOfIntMap(t *testing.T) {
 	// Map where function returns invalid
 	negBadMap := good.Map(func(x int) maybe.I { return maybe.ErrI(errors.New("bad int")) })
 	is.True(negBadMap.IsErr())
+}
+
+func TestArrayOfIntToString(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	var got maybe.AoS
+	var err error
+
+	input := []int{23, 42}
+	good, bad := getIntFixtures(input)
+
+	f := func(x int) maybe.S { return maybe.JustS(fmt.Sprintf("%d", x)) }
+
+	// Convert AoI to AoS; good path
+	got = good.ToStr(f)
+	s, err := got.Unbox()
+	is.Equal(s, []string{"23", "42"})
+	is.Nil(err)
+
+	// Convert AoS to AoI; bad path
+	got = bad.ToStr(f)
+	is.True(got.IsErr())
 }

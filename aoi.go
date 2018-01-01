@@ -80,6 +80,26 @@ func (m AoI) String() string {
 	return fmt.Sprintf("Just %v", m.just)
 }
 
+// ToStr applies a function that takes a string and returns an S.  If the AoI
+// is invalid or if any function returns an invalid S, ToStr returns an
+// invalid AoS.
+func (m AoI) ToStr(f func(x int) S) AoS {
+	if m.err != nil {
+		return ErrAoS(m.err)
+	}
+
+	new := make([]string, len(m.just))
+	for i, v := range m.just {
+		str, err := f(v).Unbox()
+		if err != nil {
+			return ErrAoS(err)
+		}
+		new[i] = str
+	}
+
+	return JustAoS(new)
+}
+
 // Unbox returns the underlying slice of ints or error.
 func (m AoI) Unbox() ([]int, error) {
 	return m.just, m.err

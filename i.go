@@ -59,6 +59,15 @@ func (m I) String() string {
 	return fmt.Sprintf("Just %v", m.just)
 }
 
+// ToStr applies a function that takes an int and returns an S.
+func (m I) ToStr(f func(x int) S) S {
+	if m.err != nil {
+		return ErrS(m.err)
+	}
+
+	return f(m.just)
+}
+
 // Unbox returns the underlying int value or error.
 func (m I) Unbox() (int, error) {
 	return m.just, m.err

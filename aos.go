@@ -73,7 +73,7 @@ func (m AoS) Map(f func(s string) S) AoS {
 }
 
 // ToInt applies a function that takes a string and returns an I.If the AoS is
-// invalid or if any function returns an invalid I, Map returns an invalid
+// invalid or if any function returns an invalid I, ToInt returns an invalid
 // AoI.
 func (m AoS) ToInt(f func(s string) I) AoI {
 	if m.err != nil {
