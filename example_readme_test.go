@@ -1,6 +1,6 @@
-package maybe_test
-
 // +build go1.8
+
+package maybe_test
 
 import (
 	"fmt"
