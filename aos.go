@@ -48,6 +48,26 @@ func (m AoS) Join(f func(s []string) S) S {
 	return f(m.just)
 }
 
+// Map applies a function to each element of a valid AoS and returns a new
+// AoS.  If the AoS is invalid or if any function returns an invalid S, Map
+// returns a "Nothing" AoS.
+func (m AoS) Map(f func(s string) S) AoS {
+	if m.err != nil {
+		return m
+	}
+
+	new := make([]string, len(m.just))
+	for i, v := range m.just {
+		str, err := f(v).Unbox()
+		if err != nil {
+			return ErrAoS(err)
+		}
+		new[i] = str
+	}
+
+	return JustAoS(new)
+}
+
 // Unbox returns the underlying slice of strings value or error.
 func (m AoS) Unbox() ([]string, error) {
 	return m.just, m.err

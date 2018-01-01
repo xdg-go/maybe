@@ -9,22 +9,27 @@ import (
 	"github.com/xdg/testy"
 )
 
+func getFixtures(input []string) (good, bad maybe.AoS) {
+	good = maybe.JustAoS(input)
+	bad = maybe.ErrAoS(errors.New("bad string"))
+	return
+}
+
 func TestMaybeArrayOfString(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
 
-	var good, bad, got maybe.AoS
+	input := []string{"Hello", "World"}
+	good, bad := getFixtures(input)
+	var got maybe.AoS
 	var just []string
 	var err error
 
-	input := []string{"Hello", "World"}
-	good = maybe.JustAoS(input)
 	just, err = good.Unbox()
 	is.Equal(just, input)
 	is.Nil(err)
 	is.False(good.IsErr())
 
-	bad = maybe.ErrAoS(errors.New("bad string"))
 	just, err = bad.Unbox()
 	is.Nil(just)
 	is.NotNil(err)
@@ -42,4 +47,28 @@ func TestMaybeArrayOfString(t *testing.T) {
 	s, err := ms.Unbox()
 	is.Equal(s, "Hello World")
 	is.Nil(err)
+}
+
+func TestMaybeArrayOfStringMap(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	input := []string{"Hello", "World"}
+	good, bad := getFixtures(input)
+	var just []string
+	var err error
+
+	// Map where everything succeeds
+	lc := good.Map(func(s string) maybe.S { return maybe.JustS(strings.ToLower(s)) })
+	just, err = lc.Unbox()
+	is.Equal(just, []string{"hello", "world"})
+	is.Nil(err)
+
+	// Map where input is invalid
+	lcBadInput := bad.Map(func(s string) maybe.S { return maybe.JustS(strings.ToLower(s)) })
+	is.True(lcBadInput.IsErr())
+
+	// Map where function returns invalid
+	lcBadMap := good.Map(func(s string) maybe.S { return maybe.ErrS(errors.New("bad string")) })
+	is.True(lcBadMap.IsErr())
 }
