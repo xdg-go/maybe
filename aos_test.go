@@ -9,7 +9,7 @@ import (
 	"github.com/xdg/testy"
 )
 
-func getFixtures(input []string) (good, bad maybe.AoS) {
+func getStrFixtures(input []string) (good, bad maybe.AoS) {
 	good = maybe.JustAoS(input)
 	bad = maybe.ErrAoS(errors.New("bad string"))
 	return
@@ -20,7 +20,7 @@ func TestMaybeArrayOfString(t *testing.T) {
 	defer func() { t.Logf(is.Done()) }()
 
 	input := []string{"Hello", "World"}
-	good, bad := getFixtures(input)
+	good, bad := getStrFixtures(input)
 	var got maybe.AoS
 	var just []string
 	var err error
@@ -54,7 +54,7 @@ func TestMaybeArrayOfStringMap(t *testing.T) {
 	defer func() { t.Logf(is.Done()) }()
 
 	input := []string{"Hello", "World"}
-	good, bad := getFixtures(input)
+	good, bad := getStrFixtures(input)
 	var just []string
 	var err error
 
