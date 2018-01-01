@@ -1,5 +1,7 @@
 package maybe
 
+import "fmt"
+
 // I implements the Maybe monad for a int.  An I is considered 'valid' or
 // 'invalid' depending on whether it contains a int or an error value.
 type I struct {
@@ -47,6 +49,14 @@ func (m I) Split(f func(s int) AoI) AoI {
 	}
 
 	return f(m.just)
+}
+
+// String returns a string representation, mostly useful for debugging.
+func (m I) String() string {
+	if m.err != nil {
+		return fmt.Sprintf("Err %v", m.err)
+	}
+	return fmt.Sprintf("Just %v", m.just)
 }
 
 // Unbox returns the underlying int value or error.

@@ -42,6 +42,9 @@ func TestArrayOfString(t *testing.T) {
 
 	got = maybe.NewAoS(nil, err)
 	is.True(got.IsErr())
+
+	is.Equal(good.String(), "Just [Hello World]")
+	is.Equal(bad.String(), "Err bad string")
 }
 
 func TestArrayOfStringBind(t *testing.T) {

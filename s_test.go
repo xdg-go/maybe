@@ -35,6 +35,9 @@ func TestString(t *testing.T) {
 
 	got = maybe.NewS("", err)
 	is.True(got.IsErr())
+
+	is.Equal(good.String(), "Just Hello")
+	is.Equal(bad.String(), "Err bad string")
 }
 
 func TestStringBind(t *testing.T) {

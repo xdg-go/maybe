@@ -34,6 +34,9 @@ func TestInt(t *testing.T) {
 
 	got = maybe.NewI(0, err)
 	is.True(got.IsErr())
+
+	is.Equal(good.String(), "Just 42")
+	is.Equal(bad.String(), "Err bad int")
 }
 
 func TestIntBind(t *testing.T) {

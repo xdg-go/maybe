@@ -1,5 +1,7 @@
 package maybe
 
+import "fmt"
+
 // AoS implements the Maybe monad for a slice of strings.  An AoS is
 // considered 'valid' or 'invalid' depending on whether it contains a slice of
 // strings or an error value.
@@ -88,6 +90,14 @@ func (m AoS) ToInt(f func(s string) I) AoI {
 	}
 
 	return JustAoI(new)
+}
+
+// String returns a string representation, mostly useful for debugging.
+func (m AoS) String() string {
+	if m.err != nil {
+		return fmt.Sprintf("Err %v", m.err)
+	}
+	return fmt.Sprintf("Just %v", m.just)
 }
 
 // Unbox returns the underlying slice of strings value or error.

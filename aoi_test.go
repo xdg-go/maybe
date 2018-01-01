@@ -40,6 +40,9 @@ func TestArrayOfInt(t *testing.T) {
 
 	got = maybe.NewAoI(nil, err)
 	is.True(got.IsErr())
+
+	is.Equal(good.String(), "Just [23 42]")
+	is.Equal(bad.String(), "Err bad int")
 }
 
 func TestArrayOfIntBind(t *testing.T) {

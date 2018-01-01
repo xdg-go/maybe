@@ -1,5 +1,7 @@
 package maybe
 
+import "fmt"
+
 // S implements the Maybe monad for a string.  An S is considered 'valid' or
 // 'invalid' depending on whether it contains a string or an error value.
 type S struct {
@@ -56,6 +58,14 @@ func (m S) ToInt(f func(s string) I) I {
 	}
 
 	return f(m.just)
+}
+
+// String returns a string representation, mostly useful for debugging.
+func (m S) String() string {
+	if m.err != nil {
+		return fmt.Sprintf("Err %v", m.err)
+	}
+	return fmt.Sprintf("Just %v", m.just)
 }
 
 // Unbox returns the underlying string value or error.
