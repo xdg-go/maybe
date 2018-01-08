@@ -142,4 +142,8 @@ func TestArrayOfIntToString(t *testing.T) {
 	// Convert AoS to AoI; bad path
 	got = bad.ToStr(f)
 	is.True(got.IsErr())
+
+	// Convert invalid I to S; albeit contrived
+	got = good.ToStr(func(x int) maybe.S { return maybe.ErrS(errors.New("invalid")) })
+	is.True(got.IsErr())
 }

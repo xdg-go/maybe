@@ -80,7 +80,7 @@ func (m AoI) String() string {
 	return fmt.Sprintf("Just %v", m.just)
 }
 
-// ToStr applies a function that takes a string and returns an S.  If the AoI
+// ToStr applies a function that takes an int and returns an S.  If the AoI
 // is invalid or if any function returns an invalid S, ToStr returns an
 // invalid AoS.
 func (m AoI) ToStr(f func(x int) S) AoS {
