@@ -2,15 +2,15 @@ package maybe
 
 import "fmt"
 
-// AoAoI implements the Maybe monad for a 2D slice of ints.  An AoAoI is considered
-// 'valid' or 'invalid' depending on whether it contains a 2D slice of ints or an
+// AoAoI implements the Maybe monad for a 2-D slice of ints.  An AoAoI is considered
+// 'valid' or 'invalid' depending on whether it contains a 2-D slice of ints or an
 // error value.
 type AoAoI struct {
 	just [][]int
 	err  error
 }
 
-// NewAoAoI constructs an AoAoI from a given 2D slice of ints or error. If e is not
+// NewAoAoI constructs an AoAoI from a given 2-D slice of ints or error. If e is not
 // nil, returns ErrAoAoI(e), otherwise returns JustAoAoI(s).
 func NewAoAoI(s [][]int, e error) AoAoI {
 	if e != nil {
@@ -19,7 +19,7 @@ func NewAoAoI(s [][]int, e error) AoAoI {
 	return JustAoAoI(s)
 }
 
-// JustAoAoI constructs a valid AoAoI from a given 2D slice of ints.
+// JustAoAoI constructs a valid AoAoI from a given 2-D slice of ints.
 func JustAoAoI(s [][]int) AoAoI {
 	return AoAoI{just: s}
 }
@@ -34,7 +34,7 @@ func (m AoAoI) IsErr() bool {
 	return m.err != nil
 }
 
-// Bind applies a function that takes a 2D slice of ints and returns an AoAoI.
+// Bind applies a function that takes a 2-D slice of ints and returns an AoAoI.
 func (m AoAoI) Bind(f func(s [][]int) AoAoI) AoAoI {
 	if m.err != nil {
 		return m
@@ -43,7 +43,7 @@ func (m AoAoI) Bind(f func(s [][]int) AoAoI) AoAoI {
 	return f(m.just)
 }
 
-// Join applies a function that takes a 2D slice of ints and returns an AoI.
+// Join applies a function that takes a 2-D slice of ints and returns an AoI.
 func (m AoAoI) Join(f func(s [][]int) AoI) AoI {
 	if m.err != nil {
 		return ErrAoI(m.err)
@@ -52,9 +52,9 @@ func (m AoAoI) Join(f func(s [][]int) AoI) AoI {
 	return f(m.just)
 }
 
-// Map applies a function to each element of a valid AoAoI and returns a new
-// AoAoI.  If the AoAoI is invalid or if any function returns an invalid I,
-// Map returns an invalid AoAoI.
+// Map applies a function to each element of a valid AoAoI (i.e. a 1-D slice)
+// and returns a new AoAoI.  If the AoAoI is invalid or if any function
+// returns an invalid AoI, Map returns an invalid AoAoI.
 func (m AoAoI) Map(f func(s []int) AoI) AoAoI {
 	if m.err != nil {
 		return m
@@ -80,10 +80,10 @@ func (m AoAoI) String() string {
 	return fmt.Sprintf("Just %v", m.just)
 }
 
-// ToStr applies a function that takes a string and returns an S.  If the
-// AoAoI is invalid or if any function returns an invalid S, ToStr returns an
-// invalid AoS.  Note: unlike Map, this is a deep conversion of individual
-// elements of the 2D slice of ints.
+// ToStr applies a function that takes an int and returns an S.  If the AoAoI
+// is invalid or if any function returns an invalid S, ToStr returns an
+// invalid AoAoS.  Note: unlike Map, this is a deep conversion of individual
+// elements of the 2-D slice of ints.
 func (m AoAoI) ToStr(f func(x int) S) AoAoS {
 	if m.err != nil {
 		return ErrAoAoS(m.err)
@@ -104,7 +104,7 @@ func (m AoAoI) ToStr(f func(x int) S) AoAoS {
 	return JustAoAoS(new)
 }
 
-// Unbox returns the underlying 2D slice of ints or error.
+// Unbox returns the underlying 2-D slice of ints or error.
 func (m AoAoI) Unbox() ([][]int, error) {
 	return m.just, m.err
 }

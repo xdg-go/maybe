@@ -16,6 +16,19 @@ the concept.
 This is an experiment to simplify some libraries the author is writing.  It
 should not be considered stable for production use.
 
+To keep type names short and manageable, abbreviations are used.  Type
+`maybe.I` is for ints; `maybe.AoI` is short for "array of ints" and
+`maybe.AoAoI` is short for "array of array of ints".
+
+This package only implements up to 2-D containers because those are
+common when working with line-oriented data.  For example, a text file
+can be interpreted as an array of an array of characters.
+
+Three constructors are provided for each type.  The `Just_` and `Err_`
+constructors are for values and errors, respectively.  The `New_`
+constructor can construct either type, and is intended for wrapping
+functions that follow the pattern of returning a value and an error.
+
 ## Example
 
 ```go
@@ -34,8 +47,8 @@ type example struct {
 }
 
 // Example shows how to convert a list of strings to a list of non-negative
-// integers, accouting for the possibility of failure either in conversion or
-// validation.
+// integers, accounting for the possibility of failure either in conversion
+// or validation.
 func Example() {
 
 	cases := []example{

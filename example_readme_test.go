@@ -15,8 +15,8 @@ type example struct {
 }
 
 // Example shows how to convert a list of strings to a list of non-negative
-// integers, accouting for the possibility of failure either in conversion or
-// validation.
+// integers, accounting for the possibility of failure either in conversion
+// or validation.
 func Example() {
 
 	cases := []example{
