@@ -17,7 +17,7 @@ type example struct {
 // Example_StrsToInts shows how to convert a list of strings to a list of
 // non-negative integers, accouting for the possibility of failure either in
 // conversion or validation.
-func Example_StrsToInts() {
+func Example() {
 
 	cases := []example{
 		{label: "success", data: []string{"23", "42", "0"}},
