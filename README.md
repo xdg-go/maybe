@@ -33,10 +33,10 @@ type example struct {
 	data  []string
 }
 
-// Example_StrsToInts shows how to convert a list of strings to a list of
-// non-negative integers, accouting for the possibility of failure either in
-// conversion or validation.
-func Example_StrsToInts() {
+// Example shows how to convert a list of strings to a list of non-negative
+// integers, accouting for the possibility of failure either in conversion or
+// validation.
+func Example() {
 
 	cases := []example{
 		{label: "success", data: []string{"23", "42", "0"}},
@@ -71,6 +71,11 @@ func Example_StrsToInts() {
 			fmt.Printf("%s: %v converted to %v\n", c.label, strs, nums)
 		}
 	}
+
+	// Output:
+	// success: Just [23 42 0] converted to Just [23 42 0]
+	// bad atoi: Just [23 forty-two 0] failed to convert: Err strconv.Atoi: parsing "forty-two": invalid syntax
+	// negative: Just [23 -42 0] failed to convert: Err -42 is negative
 }
 ```
 
