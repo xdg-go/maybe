@@ -86,6 +86,29 @@ func TestArrayOfIntBind(t *testing.T) {
 	is.True(got.IsErr())
 }
 
+func TestAoISplit(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	var got maybe.AoAoI
+	var err error
+
+	input := []int{23, 42}
+	good, bad := getIntFixtures(input)
+
+	f := func(x int) maybe.AoI { return maybe.JustAoI([]int{x}) }
+
+	// Split S to AoI
+	got = good.Split(f)
+	aoaoi, err := got.Unbox()
+	is.Equal(aoaoi, [][]int{[]int{23}, []int{42}})
+	is.Nil(err)
+
+	// Split S to AoI
+	got = bad.Split(f)
+	is.True(got.IsErr())
+}
+
 func TestArrayOfIntJoin(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()

@@ -56,6 +56,26 @@ func (m AoI) Join(f func(s []int) I) I {
 	return f(m.just)
 }
 
+// Split applies a splitting function to each element of a valid AoI,
+// resulting in a higher-dimension structure. If the AoI is invalid or if any
+// function returns an invalid AoI, Split returns an invalid AoAoI.
+func (m AoI) Split(f func(s int) AoI) AoAoI {
+	if m.IsErr() {
+		return ErrAoAoI(m.err)
+	}
+
+	new := make([][]int, len(m.just))
+	for i, v := range m.just {
+		xs, err := f(v).Unbox()
+		if err != nil {
+			return ErrAoAoI(err)
+		}
+		new[i] = xs
+	}
+
+	return JustAoAoI(new)
+}
+
 // Map applies a function to each element of a valid AoI and returns a new
 // AoI.  If the AoI is invalid or if any function returns an invalid I, Map
 // returns an invalid AoI.

@@ -88,6 +88,29 @@ func TestArrayOfStringBind(t *testing.T) {
 	is.True(got.IsErr())
 }
 
+func TestAoSSplit(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	var got maybe.AoAoS
+	var err error
+
+	input := []string{"Hello", "World"}
+	good, bad := getStrFixtures(input)
+
+	f := func(s string) maybe.AoS { return maybe.JustAoS([]string{s}) }
+
+	// Split S to AoS
+	got = good.Split(f)
+	aoaos, err := got.Unbox()
+	is.Equal(aoaos, [][]string{[]string{"Hello"}, []string{"World"}})
+	is.Nil(err)
+
+	// Split S to AoS
+	got = bad.Split(f)
+	is.True(got.IsErr())
+}
+
 func TestArrayOfStringJoin(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()

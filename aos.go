@@ -56,6 +56,26 @@ func (m AoS) Join(f func(s []string) S) S {
 	return f(m.just)
 }
 
+// Split applies a splitting function to each element of a valid AoS,
+// resulting in a higher-dimension structure. If the AoS is invalid or if any
+// function returns an invalid AoS, Split returns an invalid AoAoS.
+func (m AoS) Split(f func(s string) AoS) AoAoS {
+	if m.IsErr() {
+		return ErrAoAoS(m.err)
+	}
+
+	new := make([][]string, len(m.just))
+	for i, v := range m.just {
+		xs, err := f(v).Unbox()
+		if err != nil {
+			return ErrAoAoS(err)
+		}
+		new[i] = xs
+	}
+
+	return JustAoAoS(new)
+}
+
 // Map applies a function to each element of a valid AoS and returns a new
 // AoS.  If the AoS is invalid or if any function returns an invalid S, Map
 // returns an invalid AoS.
