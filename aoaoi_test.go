@@ -121,6 +121,10 @@ func TestAoAoIJoin(t *testing.T) {
 	// Join AoAoI to AoI; bad path
 	got = bad.Join(f)
 	is.True(got.IsErr())
+
+	// Join where input is invalid
+	badJoin := good.Join(func(x []int) maybe.I { return maybe.ErrI(errors.New("bad int")) })
+	is.True(badJoin.IsErr())
 }
 
 func TestAoAoIMap(t *testing.T) {

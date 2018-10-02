@@ -108,6 +108,10 @@ func TestAoISplit(t *testing.T) {
 	// Split S to AoI
 	got = bad.Split(f)
 	is.True(got.IsErr())
+
+	// Split where input is invalid
+	badSplit := good.Split(func(x int) maybe.AoI { return maybe.ErrAoI(errors.New("bad int")) })
+	is.True(badSplit.IsErr())
 }
 
 func TestAoIJoin(t *testing.T) {

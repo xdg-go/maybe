@@ -109,6 +109,10 @@ func TestAoSSplit(t *testing.T) {
 	// Split S to AoS
 	got = bad.Split(f)
 	is.True(got.IsErr())
+
+	// Split where input is invalid
+	badSplit := good.Split(func(x string) maybe.AoS { return maybe.ErrAoS(errors.New("bad string")) })
+	is.True(badSplit.IsErr())
 }
 
 func TestAoSJoin(t *testing.T) {
