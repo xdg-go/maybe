@@ -64,16 +64,16 @@ func (m AoS) Split(f func(s string) AoS) AoAoS {
 		return ErrAoAoS(m.err)
 	}
 
-	new := make([][]string, len(m.just))
+	xss := make([][]string, len(m.just))
 	for i, v := range m.just {
 		xs, err := f(v).Unbox()
 		if err != nil {
 			return ErrAoAoS(err)
 		}
-		new[i] = xs
+		xss[i] = xs
 	}
 
-	return JustAoAoS(new)
+	return JustAoAoS(xss)
 }
 
 // Map applies a function to each element of a valid AoS and returns a new
@@ -84,16 +84,16 @@ func (m AoS) Map(f func(s string) S) AoS {
 		return m
 	}
 
-	new := make([]string, len(m.just))
+	xss := make([]string, len(m.just))
 	for i, v := range m.just {
 		str, err := f(v).Unbox()
 		if err != nil {
 			return ErrAoS(err)
 		}
-		new[i] = str
+		xss[i] = str
 	}
 
-	return JustAoS(new)
+	return JustAoS(xss)
 }
 
 // ToInt applies a function that takes a string and returns an I.If the AoS is
@@ -104,16 +104,16 @@ func (m AoS) ToInt(f func(s string) I) AoI {
 		return ErrAoI(m.err)
 	}
 
-	new := make([]int, len(m.just))
+	xss := make([]int, len(m.just))
 	for i, v := range m.just {
 		num, err := f(v).Unbox()
 		if err != nil {
 			return ErrAoI(err)
 		}
-		new[i] = num
+		xss[i] = num
 	}
 
-	return JustAoI(new)
+	return JustAoI(xss)
 }
 
 // String returns a string representation, mostly useful for debugging.

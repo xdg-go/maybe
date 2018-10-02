@@ -53,16 +53,16 @@ func (m AoAoI) Join(f func(s []int) I) AoI {
 		return ErrAoI(m.err)
 	}
 
-	new := make([]int, len(m.just))
+	xss := make([]int, len(m.just))
 	for i, v := range m.just {
 		s, err := f(v).Unbox()
 		if err != nil {
 			return ErrAoI(err)
 		}
-		new[i] = s
+		xss[i] = s
 	}
 
-	return JustAoI(new)
+	return JustAoI(xss)
 }
 
 // Flatten joins a 2-D slice of ints into a 1-D slice
@@ -87,16 +87,16 @@ func (m AoAoI) Map(f func(s []int) AoI) AoAoI {
 		return m
 	}
 
-	new := make([][]int, len(m.just))
+	xss := make([][]int, len(m.just))
 	for i, v := range m.just {
 		x, err := f(v).Unbox()
 		if err != nil {
 			return ErrAoAoI(err)
 		}
-		new[i] = x
+		xss[i] = x
 	}
 
-	return JustAoAoI(new)
+	return JustAoAoI(xss)
 }
 
 // String returns a string representation, mostly useful for debugging.
@@ -116,19 +116,19 @@ func (m AoAoI) ToStr(f func(x int) S) AoAoS {
 		return ErrAoAoS(m.err)
 	}
 
-	new := make([][]string, len(m.just))
+	xss := make([][]string, len(m.just))
 	for i, xs := range m.just {
-		new[i] = make([]string, len(xs))
+		xss[i] = make([]string, len(xs))
 		for j, v := range xs {
 			num, err := f(v).Unbox()
 			if err != nil {
 				return ErrAoAoS(err)
 			}
-			new[i][j] = num
+			xss[i][j] = num
 		}
 	}
 
-	return JustAoAoS(new)
+	return JustAoAoS(xss)
 }
 
 // Unbox returns the underlying 2-D slice of ints or error.
