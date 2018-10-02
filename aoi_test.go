@@ -63,6 +63,7 @@ func TestAoIZero(t *testing.T) {
 	_, err := zero.Unbox()
 	is.NotNil(err)
 }
+
 func TestArrayOfIntBind(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()

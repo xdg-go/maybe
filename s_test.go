@@ -64,7 +64,7 @@ func TestStringBind(t *testing.T) {
 	is.True(got.IsErr())
 }
 
-func TestStringJoin(t *testing.T) {
+func TestStringSplit(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
 
