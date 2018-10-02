@@ -1,10 +1,14 @@
 package maybe
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // AoS implements the Maybe monad for a slice of strings.  An AoS is
 // considered 'valid' or 'invalid' depending on whether it contains a slice of
-// strings or an error value.
+// strings or an error value.  A zero-value AoS is invalid and Unbox() will
+// return an error to that effect.
 type AoS struct {
 	just []string
 	err  error
@@ -31,12 +35,12 @@ func ErrAoS(e error) AoS {
 
 // IsErr returns true for an invalid AoS.
 func (m AoS) IsErr() bool {
-	return m.err != nil
+	return m.just == nil || m.err != nil
 }
 
 // Bind applies a function that takes a slice of strings and returns an AoS.
 func (m AoS) Bind(f func(s []string) AoS) AoS {
-	if m.err != nil {
+	if m.IsErr() {
 		return m
 	}
 
@@ -45,7 +49,7 @@ func (m AoS) Bind(f func(s []string) AoS) AoS {
 
 // Join applies a function that takes a slice of strings and returns an S.
 func (m AoS) Join(f func(s []string) S) S {
-	if m.err != nil {
+	if m.IsErr() {
 		return ErrS(m.err)
 	}
 
@@ -56,7 +60,7 @@ func (m AoS) Join(f func(s []string) S) S {
 // AoS.  If the AoS is invalid or if any function returns an invalid S, Map
 // returns an invalid AoS.
 func (m AoS) Map(f func(s string) S) AoS {
-	if m.err != nil {
+	if m.IsErr() {
 		return m
 	}
 
@@ -76,7 +80,7 @@ func (m AoS) Map(f func(s string) S) AoS {
 // invalid or if any function returns an invalid I, ToInt returns an invalid
 // AoI.
 func (m AoS) ToInt(f func(s string) I) AoI {
-	if m.err != nil {
+	if m.IsErr() {
 		return ErrAoI(m.err)
 	}
 
@@ -94,7 +98,7 @@ func (m AoS) ToInt(f func(s string) I) AoI {
 
 // String returns a string representation, mostly useful for debugging.
 func (m AoS) String() string {
-	if m.err != nil {
+	if m.IsErr() {
 		return fmt.Sprintf("Err %v", m.err)
 	}
 	return fmt.Sprintf("Just %v", m.just)
@@ -102,5 +106,8 @@ func (m AoS) String() string {
 
 // Unbox returns the underlying slice of strings value or error.
 func (m AoS) Unbox() ([]string, error) {
+	if m.just == nil && m.err == nil {
+		return nil, errors.New("zero-value AoS")
+	}
 	return m.just, m.err
 }

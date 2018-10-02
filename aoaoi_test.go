@@ -49,6 +49,23 @@ func TestAoAoI(t *testing.T) {
 	is.Equal(bad.String(), "Err bad ints")
 }
 
+func TestAoAoIZero(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	// Check zero value case
+	zero := maybe.AoAoI{}
+	is.True(zero.IsErr())
+	zero.Bind(func(x [][]int) maybe.AoAoI {
+		if x == nil {
+			panic("nil slice")
+		}
+		return maybe.JustAoAoI(x)
+	})
+	is.True(zero.IsErr())
+	_, err := zero.Unbox()
+	is.NotNil(err)
+}
 func TestAoAoIBind(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()

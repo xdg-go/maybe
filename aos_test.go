@@ -47,6 +47,24 @@ func TestArrayOfString(t *testing.T) {
 	is.Equal(bad.String(), "Err bad string")
 }
 
+func TestAoSZero(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	// Check zero value case
+	zero := maybe.AoS{}
+	is.True(zero.IsErr())
+	zero.Bind(func(x []string) maybe.AoS {
+		if x == nil {
+			panic("nil slice")
+		}
+		return maybe.JustAoS(x)
+	})
+	is.True(zero.IsErr())
+	_, err := zero.Unbox()
+	is.NotNil(err)
+}
+
 func TestArrayOfStringBind(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()

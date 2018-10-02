@@ -1,10 +1,14 @@
 package maybe
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
-// AoAoI implements the Maybe monad for a 2-D slice of ints.  An AoAoI is considered
-// 'valid' or 'invalid' depending on whether it contains a 2-D slice of ints or an
-// error value.
+// AoAoI implements the Maybe monad for a 2-D slice of ints.  An AoAoI is
+// considered 'valid' or 'invalid' depending on whether it contains a 2-D
+// slice of ints or an error value.  A zero-value AoAoI is invalid and Unbox()
+// will return an error to that effect.
 type AoAoI struct {
 	just [][]int
 	err  error
@@ -31,12 +35,12 @@ func ErrAoAoI(e error) AoAoI {
 
 // IsErr returns true for an invalid AoAoI.
 func (m AoAoI) IsErr() bool {
-	return m.err != nil
+	return m.just == nil || m.err != nil
 }
 
 // Bind applies a function that takes a 2-D slice of ints and returns an AoAoI.
 func (m AoAoI) Bind(f func(s [][]int) AoAoI) AoAoI {
-	if m.err != nil {
+	if m.IsErr() {
 		return m
 	}
 
@@ -45,7 +49,7 @@ func (m AoAoI) Bind(f func(s [][]int) AoAoI) AoAoI {
 
 // Join applies a function that takes a 2-D slice of ints and returns an AoI.
 func (m AoAoI) Join(f func(s [][]int) AoI) AoI {
-	if m.err != nil {
+	if m.IsErr() {
 		return ErrAoI(m.err)
 	}
 
@@ -56,7 +60,7 @@ func (m AoAoI) Join(f func(s [][]int) AoI) AoI {
 // and returns a new AoAoI.  If the AoAoI is invalid or if any function
 // returns an invalid AoI, Map returns an invalid AoAoI.
 func (m AoAoI) Map(f func(s []int) AoI) AoAoI {
-	if m.err != nil {
+	if m.IsErr() {
 		return m
 	}
 
@@ -74,7 +78,7 @@ func (m AoAoI) Map(f func(s []int) AoI) AoAoI {
 
 // String returns a string representation, mostly useful for debugging.
 func (m AoAoI) String() string {
-	if m.err != nil {
+	if m.IsErr() {
 		return fmt.Sprintf("Err %v", m.err)
 	}
 	return fmt.Sprintf("Just %v", m.just)
@@ -85,7 +89,7 @@ func (m AoAoI) String() string {
 // invalid AoAoS.  Note: unlike Map, this is a deep conversion of individual
 // elements of the 2-D slice of ints.
 func (m AoAoI) ToStr(f func(x int) S) AoAoS {
-	if m.err != nil {
+	if m.IsErr() {
 		return ErrAoAoS(m.err)
 	}
 
@@ -106,5 +110,8 @@ func (m AoAoI) ToStr(f func(x int) S) AoAoS {
 
 // Unbox returns the underlying 2-D slice of ints or error.
 func (m AoAoI) Unbox() ([][]int, error) {
+	if m.just == nil && m.err == nil {
+		return nil, errors.New("zero-value AoAoI")
+	}
 	return m.just, m.err
 }
