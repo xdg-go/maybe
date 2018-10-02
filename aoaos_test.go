@@ -152,6 +152,30 @@ func TestAoAoSMap(t *testing.T) {
 	is.True(badMap.IsErr())
 }
 
+func TestAoAoSFlatten(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	input := [][]string{
+		[]string{"Hello", "World"},
+		[]string{"Goodbye", "Cruel World"},
+	}
+	good, bad := getAoAoSFixtures(input)
+	var got maybe.AoS
+	var just []string
+	var err error
+
+	// Good path
+	got = good.Flatten()
+	just, err = got.Unbox()
+	is.Equal(just, []string{"Hello", "World", "Goodbye", "Cruel World"})
+	is.Nil(err)
+
+	// Bad path
+	got = bad.Flatten()
+	is.True(got.IsErr())
+}
+
 func TestAoAoSToInt(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()

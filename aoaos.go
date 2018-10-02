@@ -65,6 +65,20 @@ func (m AoAoS) Join(f func(s []string) S) AoS {
 	return JustAoS(new)
 }
 
+// Flatten joins a 2-D slice of strings into a 1-D slice
+func (m AoAoS) Flatten() AoS {
+	if m.IsErr() {
+		return ErrAoS(m.err)
+	}
+
+	xs := make([]string, 0)
+	for _, v := range m.just {
+		xs = append(xs, v...)
+	}
+
+	return JustAoS(xs)
+}
+
 // Map applies a function to each element of a valid AoAoS (i.e. a 1-D slice)
 // and returns a new AoAoS.  If the AoAoS is invalid or if any function
 // returns an invalid AoS, Map returns an invalid AoAoS.

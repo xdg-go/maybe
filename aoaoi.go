@@ -65,6 +65,20 @@ func (m AoAoI) Join(f func(s []int) I) AoI {
 	return JustAoI(new)
 }
 
+// Flatten joins a 2-D slice of ints into a 1-D slice
+func (m AoAoI) Flatten() AoI {
+	if m.IsErr() {
+		return ErrAoI(m.err)
+	}
+
+	xs := make([]int, 0)
+	for _, v := range m.just {
+		xs = append(xs, v...)
+	}
+
+	return JustAoI(xs)
+}
+
 // Map applies a function to each element of a valid AoAoI (i.e. a 1-D slice)
 // and returns a new AoAoI.  If the AoAoI is invalid or if any function
 // returns an invalid AoI, Map returns an invalid AoAoI.

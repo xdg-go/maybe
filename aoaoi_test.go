@@ -156,6 +156,30 @@ func TestAoAoIMap(t *testing.T) {
 	is.True(badMap.IsErr())
 }
 
+func TestAoAoIFlatten(t *testing.T) {
+	is := testy.New(t)
+	defer func() { t.Logf(is.Done()) }()
+
+	input := [][]int{
+		[]int{23, 42},
+		[]int{11, 13},
+	}
+	good, bad := getAoAoIFixtures(input)
+	var got maybe.AoI
+	var just []int
+	var err error
+
+	// Good path
+	got = good.Flatten()
+	just, err = got.Unbox()
+	is.Equal(just, []int{23, 42, 11, 13})
+	is.Nil(err)
+
+	// Bad path
+	got = bad.Flatten()
+	is.True(got.IsErr())
+}
+
 func TestAoAoIToStr(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
