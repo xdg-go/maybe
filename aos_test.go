@@ -16,7 +16,7 @@ func getStrFixtures(input []string) (good, bad maybe.AoS) {
 	return
 }
 
-func TestArrayOfString(t *testing.T) {
+func TestAoS(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
 
@@ -65,7 +65,7 @@ func TestAoSZero(t *testing.T) {
 	is.NotNil(err)
 }
 
-func TestArrayOfStringBind(t *testing.T) {
+func TestAoSBind(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
 
@@ -111,7 +111,7 @@ func TestAoSSplit(t *testing.T) {
 	is.True(got.IsErr())
 }
 
-func TestArrayOfStringJoin(t *testing.T) {
+func TestAoSJoin(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
 
@@ -133,7 +133,7 @@ func TestArrayOfStringJoin(t *testing.T) {
 	is.True(got.IsErr())
 }
 
-func TestArrayOfStringMap(t *testing.T) {
+func TestAoSMap(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
 
@@ -157,7 +157,7 @@ func TestArrayOfStringMap(t *testing.T) {
 	is.True(lcBadMap.IsErr())
 }
 
-func TestArrayOfStringToInt(t *testing.T) {
+func TestAoSToInt(t *testing.T) {
 	is := testy.New(t)
 	defer func() { t.Logf(is.Done()) }()
 
