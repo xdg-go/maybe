@@ -48,12 +48,21 @@ func (m AoAoS) Bind(f func(s [][]string) AoAoS) AoAoS {
 }
 
 // Join applies a function that takes a 2-D slice of strings and returns an AoS.
-func (m AoAoS) Join(f func(s [][]string) AoS) AoS {
+func (m AoAoS) Join(f func(s []string) S) AoS {
 	if m.IsErr() {
 		return ErrAoS(m.err)
 	}
 
-	return f(m.just)
+	new := make([]string, len(m.just))
+	for i, v := range m.just {
+		s, err := f(v).Unbox()
+		if err != nil {
+			return ErrAoS(err)
+		}
+		new[i] = s
+	}
+
+	return JustAoS(new)
 }
 
 // Map applies a function to each element of a valid AoAoS (i.e. a 1-D slice)

@@ -48,12 +48,21 @@ func (m AoAoI) Bind(f func(s [][]int) AoAoI) AoAoI {
 }
 
 // Join applies a function that takes a 2-D slice of ints and returns an AoI.
-func (m AoAoI) Join(f func(s [][]int) AoI) AoI {
+func (m AoAoI) Join(f func(s []int) I) AoI {
 	if m.IsErr() {
 		return ErrAoI(m.err)
 	}
 
-	return f(m.just)
+	new := make([]int, len(m.just))
+	for i, v := range m.just {
+		s, err := f(v).Unbox()
+		if err != nil {
+			return ErrAoI(err)
+		}
+		new[i] = s
+	}
+
+	return JustAoI(new)
 }
 
 // Map applies a function to each element of a valid AoAoI (i.e. a 1-D slice)

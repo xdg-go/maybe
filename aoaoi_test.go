@@ -104,18 +104,18 @@ func TestAoAoIJoin(t *testing.T) {
 	var got maybe.AoI
 	var err error
 
-	f := func(s [][]int) maybe.AoI {
-		xs := make([]int, 0)
-		for _, v := range s {
-			xs = append(xs, v...)
+	f := func(x []int) maybe.I {
+		sum := 0
+		for _, v := range x {
+			sum += v
 		}
-		return maybe.JustAoI(xs)
+		return maybe.JustI(sum)
 	}
 
 	// Join AoAoI to AoI; good path
 	got = good.Join(f)
 	s, err := got.Unbox()
-	is.Equal(s, []int{23, 42, 11, 13})
+	is.Equal(s, []int{65, 24})
 	is.Nil(err)
 
 	// Join AoAoI to AoI; bad path

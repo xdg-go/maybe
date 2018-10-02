@@ -3,6 +3,7 @@ package maybe_test
 import (
 	"errors"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/xdg/maybe"
@@ -105,18 +106,12 @@ func TestAoAoSJoin(t *testing.T) {
 	var got maybe.AoS
 	var err error
 
-	f := func(s [][]string) maybe.AoS {
-		xs := make([]string, 0)
-		for _, v := range s {
-			xs = append(xs, v...)
-		}
-		return maybe.JustAoS(xs)
-	}
+	f := func(x []string) maybe.S { return maybe.JustS(strings.Join(x, " ")) }
 
 	// Join AoAoS to AoS; good path
 	got = good.Join(f)
 	s, err := got.Unbox()
-	is.Equal(s, []string{"Hello", "World", "Goodbye", "Cruel World"})
+	is.Equal(s, []string{"Hello World", "Goodbye Cruel World"})
 	is.Nil(err)
 
 	// Join AoAoS to AoS; bad path
